@@ -1,0 +1,135 @@
+{% extends "amd_base.html" %}
+{% block title %}大学生心理健康评估系统{% endblock %}
+{% block head %}
+  <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+{% endblock %}
+{% block body %}
+  <div class="row"
+       style="width: 800px;height: 300px;border: 1px solid #dddddd;margin: auto;margin-top: 40px;background-color:#f5f5f5 ">
+    <div id="main1" style="width: 800px;height:300px;margin: auto;margin-top: 20px"></div>
+  </div>
+  <div class="row"
+       style="width: 800px;height: 300px;border: 1px solid #dddddd;margin: auto;margin-top: 40px;background-color:#f5f5f5 ">
+    <div id="main2" style="width: 800px;height:300px;margin: auto;margin-top: 20px"></div>
+  </div>
+    <div class="row"
+       style="width: 800px;height: 300px;border: 1px solid #dddddd;margin: auto;margin-top: 40px;background-color:#f5f5f5 ">
+    <div id="main3" style="width: 800px;height:300px;margin: auto;margin-top: 20px"></div>
+  </div>
+  <script type="text/javascript">
+      var myChart1 = echarts.init(document.getElementById('main1'));
+      // 指定图表的配置项和数据
+      var option1 = {
+              title: {
+                  text: '注册人数'
+              },
+              tooltip: {},
+              legend: {
+                  data: ["注册人数"]
+              },
+              xAxis: {
+                  name: '天前',
+                  data: [
+                      {% for each in time_dir %}
+                          {% if each==0 %}
+                              "今天",
+                          {% else %}
+                              {{ each }},
+                          {% endif %}
+                      {% endfor %}
+
+                  ]
+              },
+              yAxis: {
+                  name: '注册人数',
+                  interval: 1,
+                  ticks: {
+                      beginAtZero: true
+                  },
+              },
+              series: [{
+                  name: "注册人数",
+                  type: 'line',
+                  data: [
+                      {% for ee in time_dir %}
+                          {{ time_dir[ee] }},
+                      {% endfor %}
+                  ],
+
+              }]
+          }
+      ;
+      // 使用刚指定的配置项和数据显示图表。
+      myChart1.setOption(option1);
+
+
+      var myChart2 = echarts.init(document.getElementById('main2'));
+      // 指定图表的配置项和数据
+      var option2 = {
+              title: {
+                  text: "问卷回答人数"
+              },
+              series: [{
+                  name: "注册人数",
+                  type: 'pie',
+                  radius: "55%",
+                  data: [
+                      {% for key in answer_dir %}
+                          {value:{{ answer_dir[key] }}, name: '{{key}}'},
+                      {% endfor %}
+
+                  ],
+                  label:{
+                    normal: {
+                        show:true,
+                        formatter:"{b}问卷：{c}人"
+                    },
+                  },
+              }]
+          }
+      ;
+      // 使用刚指定的配置项和数据显示图表。
+      myChart2.setOption(option2);
+
+
+      var myChart3 = echarts.init(document.getElementById('main3'));
+      // 指定图表的配置项和数据
+      var option3 = {
+              title: {
+                  text: '今日测试次数'
+              },
+              tooltip: {},
+              legend: {
+                  data: ["测试次数"]
+              },
+              xAxis: {
+                  name: '问卷名',
+                  data: [
+                      {% for ii in answer_now_dir %}
+                          "{{ ii }}",
+                      {% endfor %}
+                  ]
+              },
+              yAxis: {
+                  name: '测试次数',
+                  interval: 1,
+                  ticks: {
+                      beginAtZero: true
+                  },
+              },
+              series: [{
+                  name: "测试次数",
+                  type: 'bar',
+                  data: [
+                      {% for eee in answer_now_dir %}
+                          {{ answer_now_dir[eee] }},
+                      {% endfor %}
+                  ],
+
+              }]
+          }
+      ;
+      // 使用刚指定的配置项和数据显示图表。
+      myChart3.setOption(option3);
+  </script>
+{% endblock %}

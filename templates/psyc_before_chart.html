@@ -1,0 +1,72 @@
+{% extends "psyc_base.html" %}
+{% block title %}问卷分析{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/wenjuan.css') }}">
+  <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+{% endblock %}
+{% block body %}
+  <div class="container-fluid">
+    <div class="row" style="box-shadow: 5px 5px 5px #aaaaaa ">
+      <div class="col-md-12">
+        <div class="page_title" style="text-align: center">
+          <h2>回答记录</h2>
+        </div>
+      </div>
+    </div>
+    <div class="mt-5">
+      {% for i in range(len_of_wenjuan) %}
+        <div class="accordion " id="accordionExample" style="border-top: black 1px solid">
+          <div class="card">
+            <div class="card-header" id="heading{{ i }}" style="display: inline-block">
+              <h2 class="mb-0" style="display: inline-block">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" style="text-decoration: none;color: #23272b"
+                        data-target="#collapse{{ i }}" aria-expanded="false" aria-controls="collapse{{ i }}">
+                  {{ wenjuan_list[i].wenjuan_name }}
+                </button>
+              </h2>
+              <a style="display: inline-block" href="{{ url_for('psychologist.psyc_all_user_chart',wname=wenjuan_list[i].wenjuan_name) }}" type="button" class="btn btn-primary btn-sm">进入分析界面</a>
+            </div>
+            <div id="collapse{{ i }}" class="collapse" aria-labelledby="heading{{ i }}"
+                 data-parent="#accordionExample">
+              <div class="card-body">
+                <table class="table">
+                  <caption>List of users</caption>
+                  <thead>
+                  <tr>
+                    <th scope="col">用户名</th>
+                    <th scope="col">学生姓名</th>
+                    <th scope="col">最后一次完成时间</th>
+                    <th scope="col">完成次数</th>
+                    <th scope="col">操作</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for j in range(len_of_stu_list[i]) %}
+                    {% if test_times_model[i][j].wenjuan_name==wenjuan_list[i].wenjuan_name %}
+                      <tr>
+                        <th scope="row"><a
+                                href="{{ url_for('psychologist.psyc_chart',wname=wenjuan_list[i].wenjuan_name,u_id=stu_user_list[i][j].id,username=stu_user_list[i][j].username) }}"
+                                style="text-decoration: none;color: #575962">{{ stu_user_list[i][j].username }}</a>
+                        </th>
+                        <td>{{ stu_exts_list[i][j].name }}</td>
+                        <td>{{ stu_answer_list[i][j].create_time }}</td>
+                        <td>{{ test_times_model[i][j].test_times }}</td>
+                        <td>
+                          <div class="d-flex">
+                            <a href="#"
+                               class="btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a>
+                          </div>
+                        </td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

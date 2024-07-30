@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}心理健康问卷{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/wenjuan.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/弹窗.css') }}">
+{% endblock %}
+{% block body %}
+  <div class="container-fluid">
+    <div class="row" style="box-shadow: 5px 5px 5px #aaaaaa ">
+      <div class="col-md-12">
+        <div class="page_title" style="text-align: center">
+          <h2>测试历史记录</h2>
+        </div>
+      </div>
+    </div>
+    <div class="mt-5">
+      {% for key in wenjuan_List %}
+        <div class="accordion " id="accordionExample" style="border-top: black 1px solid">
+          <div class="card">
+            <div class="card-header" id="heading{{ key.id }}" style="display: inline-block">
+              <h2 class="mb-0" style="display: inline-block">
+                <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse"
+                        style="text-decoration: none;color: #23272b"
+                        data-target="#collapse{{ key.id }}" aria-expanded="false" aria-controls="collapse{{ key.id }}">
+                  {{ key.wenjuan_name }}
+                </button>
+              </h2>
+              <a style="display: inline-block" href="{{ url_for('wenjuan.test_analyse',wname=key.wenjuan_name) }}"
+                 type="button" class="btn btn-primary btn-sm">进入分析界面</a>
+            </div>
+            <div id="collapse{{ key.id }}" class="collapse" aria-labelledby="heading{{ key.id }}"
+                 data-parent="#accordionExample">
+              <div class="card-body">
+                <table class="table">
+                  <caption>List of users</caption>
+                  <thead>
+                  <tr>
+                    <th scope="col">问卷名</th>
+                    <th scope="col">完成时间</th>
+                    <th scope="col">总分</th>
+                    <th scope="col">评判</th>
+                    <th scope="col">操作</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for i in range(len_of_wenjuan_exts) %}
+                    {% if one_of_wenjuan_list[i].wenjuan_name==key.wenjuan_name %}
+                      <tr>
+                        <th scope="row"><a
+                                href="{{ url_for('wenjuan.history_to_report',wname=one_of_wenjuan_list[i].wenjuan_name,test_times=wenjuan_exts_list[i].test_times) }}"
+                                style="text-decoration: none;color: #575962">{{ one_of_wenjuan_list[i].wenjuan_name }}</a>
+                        </th>
+
+                        <td>{{ one_of_wenjuan_list[i].create_time }}</td>
+                        <td>{{ wenjuan_exts_list[i].total_score }}</td>
+                        <td>{{ wenjuan_exts_list[i].level }}</td>
+                        <td>
+                          <div class="d-flex">
+                            <a href="{{ url_for('wenjuan.del_history',wname=one_of_wenjuan_list[i].wenjuan_name,test_times=one_of_wenjuan_list[i].test_times) }}"
+                               class="btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a>
+                          </div>
+                        </td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

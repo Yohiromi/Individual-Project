@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}测试报告{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+  <div class="container-fluid">
+  <div class="row" style="box-shadow: 5px 5px 5px #aaaaaa ">
+      <div class="col-md-12">
+        <div class="page_title" style="text-align: center">
+          <h2>测试报告</h2>
+        </div>
+      </div>
+    </div>
+    {% for each  in all_report %}
+      {% if each.report_base64!="无" %}
+        <div class="item mb-5 mt-4">
+          <div class="media" style="border-top: 1px solid #dddddd;border-bottom: 1px solid #dddddd;">
+            <img class="mr-3 img-fluid post-thumb d-none d-md-flex" style="width: 100%;height: 50px"
+                 src="data:image/jpg;base64,{{ each.report_base64 }}" alt="image">
+            <div class="media-body">
+            </div><!--//media-body-->
+          </div><!--//media-->
+        </div>
+      {% endif %}
+
+    {% endfor %}
+  </div>
+{% endblock %}

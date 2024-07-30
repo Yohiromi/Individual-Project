@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}问卷分析{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/wenjuan.css') }}">
+  <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+{% endblock %}
+{% block body %}
+  <div class="container-fluid" style="overflow: auto">
+    <div class="row"
+         style="width: 800px;height: 300px;border: 1px solid #dddddd;margin: auto;margin-top: 40px;background-color:#f5f5f5 ">
+      <div id="main1" style="width: 800px;height:300px;margin: auto;margin-top: 20px"></div>
+    </div>
+    <div class="row"
+         style="width: 800px;height: 300px;border: 1px solid #dddddd;margin: auto;margin-top: 40px;background-color:#f5f5f5 ">
+      <div id="main2" style="width: 800px;height:300px;margin: auto;margin-top: 20px"></div>
+    </div>
+    <div class="row"
+         style="width: 800px;height: 80px;border: 1px solid #dddddd;margin: auto;margin-top: 20px;background-color:white ">
+      <div class="row" style="padding: 10px;width: 100%;height: 20px;">
+        <p style="display:block;color: #41b5d8;margin-left: 20px;height: 20px">对照分析</p>
+      </div>
+      <div class="row" style="padding: 10px;padding-top:5px;width: 100%;height: 20px;margin-top: 10px">
+        <p style="display:block;margin-left: 20px;height: 20px">{{ analysis_msg }}</p>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+      // 基于准备好的dom，初始化echarts实例
+      var myChart1 = echarts.init(document.getElementById('main1'));
+      // 指定图表的配置项和数据
+      var option1 = {
+              title: {
+                  text: '{{ wname }}的分析报告'
+              },
+              tooltip: {},
+              legend: {
+                  data: ['{{ wname }}']
+              },
+              xAxis: {
+                  name: '时间',
+                  data: [
+                      {% for i in range(len_of_wenjuan_exts) %}
+                              "{{ one_of_wenjuan_list[i].create_time }}",
+                      {% endfor %}
+                  ]
+              },
+              yAxis: {
+                  name: '分数',
+                  ticks: {
+                      beginAtZero: true
+                  },
+              },
+              series: [{
+                  name: '{{ wname }}',
+                  type: 'line',
+                  data: [
+                      {% for key in wenjuan_exts_list %}
+                          {{ key.total_score }},
+                      {% endfor %}
+                  ],
+
+              }]
+          }
+      ;
+      // 使用刚指定的配置项和数据显示图表。
+      myChart1.setOption(option1);
+      // 基于准备好的dom，初始化echarts实例
+      var myChart2 = echarts.init(document.getElementById('main2'));
+      // 指定图表的配置项和数据
+      var option2 = {
+              title: {
+                  text: '{{ wname }}的分析报告'
+              },
+              tooltip: {},
+              legend: {
+                  data: ['{{ wname }}']
+              },
+              xAxis: {
+                  name: '测试次数',
+                  data: [1, 2, 3]
+              },
+              yAxis: {
+                  name: '分数',
+                  ticks: {
+                      beginAtZero: true
+                  },
+              },
+              series: [{
+                  name: '{{ wname }}',
+                  type: 'bar',
+                  data: [
+                      {% for key in wenjuan_exts_list %}
+                          {{ key.total_score }},
+                      {% endfor %}
+                  ],
+
+              }]
+          }
+      ;
+      // 使用刚指定的配置项和数据显示图表。
+      myChart2.setOption(option2);
+  </script>
+{% endblock %}

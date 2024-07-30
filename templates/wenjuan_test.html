@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}心理健康问卷{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/wenjuan.css') }}">
+{% endblock %}
+{% block body %}
+  <div class="row">
+    <div class="col-lg-2">
+    </div>
+    <div class="col-lg-6 mt-2">
+      <div class="row">
+        <table>
+          <form action="/wenjuan/next_wenjuan//1132/20/SDS%E6%8A%91%E9%83%81%E8%87%AA%E6%B5%8B%E8%A1%A8" method="post"
+                id="form1"></form>
+          {% for i in range(1,wenjuan_len) %}
+            <div>
+              <tr>
+                <td style="padding-left: 30px;">
+                  <h4 style="margin-top: 5px;text-align: center">{{ i }}.{{ wenjuan_search[i].exercise_title }}</h4>
+                </td>
+              </tr>
+              {% if wenjuan_search[i].exercise_type=="radio" %}
+              <tr>
+                <td>
+                  {% for option in option_all[i] %}
+                    <div class="form-check mb-2">
+                      <input type="hidden" id="{{ wenjuan_search[i].id }}" name="{{ wenjuan_search[i].id }}">
+                      <a href="#" type="button" class="btn btn-outline-success" id="select"
+                         style="display: block;width: 100%;">
+                        {{ option }}
+                      </a>
+                      <input type="hidden" name="{{ wenjuan_search[i].id }}|{{ option }}"
+                             value="{{ option_all[i][option] }}">
+                    </div>
+                  {% endfor %}
+                </td>
+              </tr>
+              {% elif wenjuan_search[i].exercise_type=="checkbox" %}
+              <tr>
+                <td>
+                  {% for option in option_all[i] %}
+                    <div class="form-check mb-2">
+                      <input class="form-check-input" type="checkbox" name="{{ wenjuan_search[i].id }}"
+                             id="exampleRadios1"
+                             value="{{ option }}">
+                      <input type="hidden" name="{{ wenjuan_search[i].id }}|{{ option }}"
+                             value="{{ option_all[i][option] }}">
+                      <label class="form-check-label" for="exampleRadios1">
+                        {{ option }}
+                      </label>
+                    </div>
+                  {% endfor %}
+                </td>
+              </tr>
+            {% endif %}
+            </div>
+          {% endfor %}
+        </table>
+        <div class="row ml-2" style="padding: 0px;width: 790px;margin: 0px">
+          <div style="padding: 0px;width: 100%;">
+            <button href="#" type="submit" class="btn btn-outline-success"
+                    style="display: block;width: 100%;background-color: #64bfa1;"
+                    onclick="document.getElementById('form1').submit();return false;">
+              提交
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,200 @@
+{% extends "psyc_base.html" %}
+{% block title %}心理医生{% endblock %}
+{% block head %}
+  <script src="{{ url_for('static',filename='jquery/jquery.3.6.min.js') }}"></script>
+  <!-- CSS -->
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,100,300,500">
+  <!--<link rel="stylesheet" href="{{ url_for('static',filename='bootstrap/bootstrap.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='psyc_central/assets/css/form-elements.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='psyc_central/assets/css/style.css') }}">-->
+
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+
+  <!-- Favicon and touch icons -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='psyc_central/assets/ico/favicon.png') }}">
+  <link rel="stylesheet"
+        href="{{ url_for('static',filename='psyc_central/assets/ico/apple-touch-icon-144-precomposed.png') }}">
+  <link rel="stylesheet"
+        href="{{ url_for('static',filename='psyc_central/assets/ico/apple-touch-icon-114-precomposed.png') }}">
+  <link rel="stylesheet"
+        href="{{ url_for('static',filename='psyc_central/assets/ico/apple-touch-icon-72-precomposed.png') }}">
+  <link rel="stylesheet"
+        href="{{ url_for('static',filename='psyc_central/assets/ico/apple-touch-icon-57-precomposed.png') }}">
+{% endblock %}
+{% block body %}
+  <div class="container" style="padding: 0px">
+    <div class="row">
+      <div class="col-lg-1"></div>
+      <div class="col-lg-9">
+        <div class="row" style="width: 100%;height: 300px;position: relative;padding: 0px;margin: 0px">
+          <img src="{{ url_for('static',filename='images/背景1.jpg') }} " style="width: 100%;height: 100%">
+          <div class="row" style="position: absolute;width: 100%;">
+            <div class="col-lg-3" style="padding: 0px">
+              <div class="top-big-link mt-2">
+                <a class="btn btn-link-1 launch-modal" href="#" data-modal-id="modal-register"
+                   style="display:block;margin: auto;color: white">编辑信息</a>
+              </div>
+            </div>
+            <div class="col-lg-6 mt-2 " style="padding: 0px">
+              <img src="{{ url_for('static',filename='images/默认用户头像.jpg') }}"
+                   style="width: 75px;height: 75px;display: block;border-radius:35px;margin: auto">
+              <div class="row mt-4">
+                <span style="color: white;margin: auto">{{ psyc.name }}
+                  {% if psyc.gender=='男' %}
+                    <img src="{{ url_for('static',filename='images/男.png') }}">
+                  {% else %}
+                    <img src="{{ url_for('static',filename='images/女.png') }}">
+                  {% endif %}
+                </span>
+              </div>
+              <div class="row mt-4">
+                <div style="margin: auto">
+                  {% for each in tag_list %}
+                    <div class="mt-1" id="tag_list"
+                         style="border: 1px solid;width: 65px;height: 20px;border-color:white;border-radius: 10px;text-align: center;display: inline-block">
+                    <span style="font-size: 10px ;color:white;display: block;" id="double_test">
+                      {{ each }}
+                    </span>
+                    </div>
+                  {% endfor %}
+                  <button type="button"
+                          style="width: 21px;height: 21px;margin: auto;border-radius: 10px;border: #aaaaaa;text-align: center"
+                          id="add-tag">
+                    +
+                  </button>
+                </div>
+                <div class="row" style="width: 100%;height: 20px;margin-top: 8px;padding: 0px;display: none"
+                     id="add_kuang">
+                  <div class="col-lg-10 mt-1" style="margin: 0px;display:inline-block;padding: 0px">
+                    <form method="post" action="{{ url_for('psychologist.get_new_tag') }}" id="form-new-tag">
+                      <input type="text" style="border: white;height: 20px;width: 200px;margin-left: 125px"
+                           name="new_tag">
+                    </form>
+
+                  </div>
+                  <div class="col-lg-2 mt-1" style="display: inline-block;padding: 0px">
+                    <button type="button" id="new-tag"
+                            style="height: 21px;width: 21px;border-radius: 13px;border:none;color: white;background-color: #80bdff">
+                      √
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-8">
+                <div class="row mt-4" style="color: white;margin: auto">
+                  <span style="display: inline-block;">
+                    关注数:{{ psyc.follow_times }}
+                  </span>
+                  <span style="display:inline-block;margin-left: 100px">
+                    被问次数:{{ psyc.question_times }}
+                  </span>
+                  <span style="display: inline-block;margin-left: 100px">
+                    回答次数:{{ psyc.answer_times }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3" style="padding: 0px">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-1">
+          <div class="modal fade" id="modal-register" tabindex="-1" role="dialog" aria-labelledby="modal-register-label"
+               aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form role="form" action="{{ url_for('psychologist.psyc_change') }}" method="post"
+                        class="registration-form">
+                    <input type="hidden" name="p_len" value="{{ len_of_tag }}">
+                    <div class="form-group">
+                      <label for="form-first-name">姓名</label>
+                      <input type="text" name="p_name" value="{{ psyc.name }}"
+                             class="form-first-name form-control" id="form-first-name">
+                    </div>
+                    <div class="form-group">
+                      <fieldset class="form-group row">
+                        <label for="form-last-name">性别</label>
+                        <div class="col-sm-10">
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="p_gender" id="gridRadios1" value="男"
+                                   checked>
+                            <label class="form-check-label" for="gridRadios1">
+                              男
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="p_gender" id="gridRadios2" value="女">
+                            <label class="form-check-label" for="gridRadios2">
+                              女
+                            </label>
+                          </div>
+                        </div>
+                      </fieldset>
+                    </div>
+                    <div class="form-group">
+                      <label for="form-first-name">年龄</label>
+                      <input type="text" name="p_age" value="{{ psyc.age }}"
+                             class="form-first-name form-control" id="form-first-name">
+                    </div>
+                    <div class="form-group">
+                      <label for="form-email">
+                        你的擅长
+                      </label>
+                      {% for i in range(len_of_tag) %}
+                        <input type="text" name="tag{{ i }}" class="form-email form-control"
+                               id="form-email" value="{{ tag_list[i] }}">
+                      {% endfor %}
+                    </div>
+                    <div class="form-group">
+                      <!--<label  for="form-about-yourself">About yourself</label>
+                      <textarea name="form-about-yourself" placeholder="About yourself..."
+                                class="form-about-yourself form-control" id="form-about-yourself"></textarea>-->
+                    </div>
+                    <button type="submit" class="btn" style="background-color: dodgerblue;width: 100%;color: white">
+                      修改
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <script>
+      window.onload = function () {
+          $('.launch-modal').on('click', function (e) {
+              e.preventDefault();
+              $('#' + $(this).data('modal-id')).modal();
+          });
+          document.getElementById("add-tag").onclick = function () {
+              document.getElementById("add_kuang").style.display = 'contents'
+          }
+          document.getElementById("double_test").ondblclick = function () {
+              document.getElementById("add_kuang").style.display = 'contents'
+          }
+          document.getElementById("new-tag").onclick = function () {
+              document.getElementById("form-new-tag").submit()
+              document.getElementById("add_kuang").style.display = 'none';
+          }
+      }
+  </script>
+
+  <!--<script src="assets/js/jquery-1.11.1.min.js"></script>-->
+  <script src="{{ url_for('static',filename='psyc_central/assets/js/jquery.backstretch.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='psyc_central/assets/js/scripts.js') }}"></script>
+{% endblock %}

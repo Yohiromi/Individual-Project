@@ -1,0 +1,107 @@
+{% extends "psyc_base.html" %}
+{% block title %}回答私信{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+  <div class="talk_con" style=" width: 600px;height: 500px;border: 1px solid ;border-color: #666;margin: 50px auto 0;
+    background-color: #f9f9f9;">
+    <div class="talk_show" id="words"
+         style="width: 580px;height: 420px;border: 1px solid;border-color:#666;background-color: #fff;margin: 10px auto 0;overflow: auto;">
+      {% for each in all_msg %}
+        {% if each.msg_type=="answer" %}
+          <div class="btalk" style="margin: 10px;text-align: right;">
+          <span style="display: inline-block;background:#ef8201 ;border-radius: 10px;color: #fff;padding: 5px 10px;">
+            {{ psyc.name }}:{{ each.content }}
+          </span>
+          </div>
+        {% else %}
+          <div class="atalk" style="margin: 10px;">
+          <span style="display: inline-block;background: #0181cc;border-radius: 10px;color: #fff;padding: 5px 10px;">
+            {{ stu.username }}（学生）:{{ each.content }}
+          </span>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="talk_input" style="width: 580px;margin: 10px auto 0;">
+      <input type="hidden" id="who" value="{{ psyc.name }}">
+      <input type="hidden" id="stu_id" value="{{ stu.id }}">
+      <input type="hidden" id="p_id" value="{{ psyc.id }}">
+      <input type="text" class="talk_word" id="talkwords"
+             style="width: 420px;height: 26px;padding: 0px;float: left;margin-left: 10px;outline: none;text-indent: 10px;">
+      <input type="button" value="发送" class="talk_sub" id="talksub"
+             style="width: 56px;height: 30px;float: left;margin-left: 10px;">
+    </div>
+  </div>
+  <script>
+      //
+      window.onload = function () {
+          var Words = document.getElementById("words");
+          var Who = document.getElementById("who");
+          var TalkWords = document.getElementById("talkwords");
+          var TalkSub = document.getElementById("talksub");
+
+
+          $(document).keypress(function (e) {
+              if ((e.keyCode || e.which) === 13) {
+                  // 触发需要调用的方法
+                var str = "";
+
+              if (TalkWords.value == "") {
+                  // 消息为空时弹窗
+                  alert("消息不能为空");
+                  return;
+              }
+              str = '<div class="btalk" style="margin: 10px;text-align: right;"><span style="display: inline-block;background: #ef8201;border-radius: 10px;color: #fff;padding: 5px 10px;"> ' + Who.value + ':' + TalkWords.value + '</span></div>';
+              Words.innerHTML = Words.innerHTML + str;
+              $.ajax(
+                  {
+                      url: "/psychologist/psyc_answer_messages",
+                      method: 'POST',
+                      data: {
+                          "psyc_id":document.getElementById('p_id').value ,
+                          "stu_id": document.getElementById('stu_id').value,
+                          "messages": document.getElementById('talkwords').value,
+                      },
+                      success: function (data) {
+                      },
+                      error: function (e) {
+                          alert("error");
+                      }
+                  })
+              document.getElementById('talkwords').value = "";
+                  $("#search_ipt").click();
+              }
+          });
+
+          TalkSub.onclick = function () {
+              //定义空字符串
+              var str = "";
+
+              if (TalkWords.value == "") {
+                  // 消息为空时弹窗
+                  alert("消息不能为空");
+                  return;
+              }
+              str = '<div class="btalk" style="margin: 10px;text-align: right;"><span style="display: inline-block;background: #ef8201;border-radius: 10px;color: #fff;padding: 5px 10px;"> ' + Who.value + ':' + TalkWords.value + '</span></div>';
+              Words.innerHTML = Words.innerHTML + str;
+              $.ajax(
+                  {
+                      url: "/psychologist/psyc_answer_messages",
+                      method: 'POST',
+                      data: {
+                          "psyc_id":document.getElementById('p_id').value ,
+                          "stu_id": document.getElementById('stu_id').value,
+                          "messages": document.getElementById('talkwords').value,
+                      },
+                      success: function (data) {
+                      },
+                      error: function (e) {
+                          alert("error");
+                      }
+                  })
+              document.getElementById('talkwords').value = "";
+          }
+      }
+  </script>
+{% endblock %}

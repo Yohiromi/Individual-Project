@@ -1,0 +1,155 @@
+{% extends "amd_base.html" %}
+{% block title %}问卷管理{% endblock %}
+{% block head %}
+  <!-- PAGE TITLE HERE -->
+
+  <!-- Datatable -->
+  <link href="{{ url_for('static',filename='amd/css/jquery.dataTables.min.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/弹窗.css') }}">
+  <!-- Custom Stylesheet -->
+{% endblock %}
+{% block body %}
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">{{ wname }}</h4>
+        </div>
+        <div class="card-header">
+          <button type="button" id="triggerBtnadd{{ wname }}" class="btn btn-primary" style="height:50px;width:100px;">
+            <ion-icon name="add-circle-outline" style="width: 25px;height: 25px;"></ion-icon>
+          </button>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="example3" class="display" style="min-width: 845px">
+              <thead>
+              <tr>
+                <th>id</th>
+                <th>题目</th>
+                <th>选项</th>
+                <th>选项分数</th>
+                <th>创建时间</th>
+                <th>作者id</th>
+                <th>操作</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for each in  wenjuan %}
+                <tr>
+                  <td>{{ each.id }}</td>
+                  <td>{{ each.exercise_title }}</td>
+                  <td>{{ each.option }}</td>
+                  <td>{{ each.option_point }}</td>
+                  <td>{{ each.create_time }}</td>
+                  <td>{{ each.u_id }}</td>
+                  <td>
+                    <div class="d-flex">
+                      <a href="#" class="btn btn-primary shadow btn-xs sharp me-1" id="triggerBtn{{ each.id }}"><i
+                              class="fas fa-pencil-alt"></i></a>
+                      <a href="{{ url_for('wenjuan.amd_del_wenjuan',wid=each.id,wname=each.wenjuan_name) }}"
+                         class="btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a>
+                    </div>
+                  </td>
+                </tr>
+                <div id="myModal{{ each.id }}" class="modal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2>编辑信息</h2>
+                      <span id="closeBtn{{ each.id }}" class="close">×</span>
+                    </div>
+                    <div class="modal-body">
+                      <form method="post"
+                            action="{{ url_for('wenjuan.amd_change_wenjuan',wid=each.id,wname=each.wenjuan_name) }}"
+                            enctype="multipart/form-data">
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">题目</label>
+                          <input type="text" class="form-control" name="exercise_title"
+                                 value="{{ each.exercise_title }}">
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">选项</label>
+                          <input type="text" class="form-control" name="option" value="{{ each.option }}">
+                          <small style="color: #c9302c">以空格分隔</small>
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">选项分数</label>
+                          <input type="text" class="form-control" name="option_point" value="{{ each.option_point }}">
+                          <small style="color: #c9302c">以空格分隔</small>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-success">提交</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+              <div id="myModaladd{{ wname }}" class="modal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2>添加题目</h2>
+                      <span id="closeBtnadd{{ wname }}" class="close">×</span>
+                    </div>
+                    <div class="modal-body">
+                      <form method="post"
+                            action="{{ url_for('wenjuan.amd_add_wenjuan',wname=wname) }}"
+                            enctype="multipart/form-data">
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">题目</label>
+                          <input type="text" class="form-control" name="exercise_title">
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">选项</label>
+                          <input type="text" class="form-control" name="option">
+                          <small style="color: #c9302c">以空格分隔</small>
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">选项分数</label>
+                          <input type="text" class="form-control" name="option_point" >
+                          <small style="color: #c9302c">以空格分隔</small>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-success">提交</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+         (function () {
+                 {% for ee in  wenjuan %}
+                     document.getElementById("triggerBtn{{ ee.id }}").onclick = function () {
+                         console.log(document.getElementById("myModal{{ ee.id }}"));
+                         document.getElementById("myModal{{ ee.id }}").style.display = "block";
+                     }
+
+                     /*模态框关闭*/
+                     document.getElementById("closeBtn{{ ee.id }}").onclick = function () {
+                         document.getElementById("myModal{{ ee.id }}").style.display = "none";
+                     }
+                 {% endfor %}
+                        document.getElementById("triggerBtnadd{{ wname }}").onclick = function () {
+                         console.log(document.getElementById("myModaladd{{ wname }}"));
+                         document.getElementById("myModaladd{{ wname }}").style.display = "block";
+                     }
+
+                     /*模态框关闭*/
+                     document.getElementById("closeBtnadd{{ wname }}").onclick = function () {
+                         document.getElementById("myModaladd{{ wname }}").style.display = "none";
+                     }
+             }
+      )();
+  </script>
+  <script src="https://www.17sucai.com/preview/1097306/2021-09-08/xhtml/vendor/apexchart/apexchart.js"></script>
+  <!-- Datatable -->
+  <script src="{{ url_for('static',filename='amd/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='amd/js/datatables.init.js') }}"></script>
+{% endblock %}

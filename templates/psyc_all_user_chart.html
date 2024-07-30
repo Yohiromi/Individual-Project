@@ -1,0 +1,61 @@
+{% extends "psyc_base.html" %}
+{% block title %}问卷分析{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/wenjuan.css') }}">
+  <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+{% endblock %}
+{% block body %}
+  <div class="container-fluid">
+    <div class="row"
+         style="width: 800px;height: 300px;border: 1px solid #dddddd;margin: auto;margin-top: 80px;background-color:#f5f5f5 ">
+      <div id="main" style="width: 800px;height:300px;margin: auto;margin-top: 20px"></div>
+    </div>
+  </div>
+  <script type="text/javascript">
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('main'));
+      // 指定图表的配置项和数据
+      var option = {
+              title: {
+                  text: '用户的分析报告'
+              },
+              tooltip: {},
+              legend: {
+                  data: [
+                      {% for each in stu_user_list %}
+                          '{{ each.username }}',
+                      {% endfor %}
+
+                  ]
+              },
+              xAxis: {
+                  name: '测试次数',
+                  data: [1, 2, 3]
+              },
+              yAxis: {
+                  name: '分数',
+                  ticks: {
+                      beginAtZero: true
+                  },
+              },
+              series: [
+                  {% for i in range(len_of_stu) %}
+                      {
+                          name: '{{ stu_user_list[i].username }}',
+                          type: 'bar',
+                          data: [
+                              {% for key in wenjuan_exts_list[i] %}
+                                  {{ key.total_score }},
+                              {% endfor %}
+
+                          ],
+
+                      },
+                  {% endfor %}
+              ]
+          }
+      ;
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+  </script>
+{% endblock %}

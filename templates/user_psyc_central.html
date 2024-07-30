@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}心理咨询师{% endblock %}
+{% block head %}
+  <script src="{{ url_for('static',filename='jquery/jquery.3.6.min.js') }}"></script>
+{% endblock %}
+{% block body %}
+  <div class="container" style="padding: 0px">
+    <div class="row">
+      <div class="col-lg-1"></div>
+      <div class="col-lg-9">
+        <div class="row" style="width: 100%;height: 300px;position: relative;padding: 0px;margin: 0px">
+          <img src="{{ url_for('static',filename='images/背景1.jpg') }} " style="width: 100%;height: 100%">
+          <div class="row" style="position: absolute;width: 100%;">
+            <div class="col-lg-3" style="padding: 0px"></div>
+            <div class="col-lg-6 mt-2 " style="padding: 0px">
+              <img src="data:image/jpg;base64,{{ psyc.Users.img_base64 }}"
+                   style="width: 75px;height: 75px;display: block;border-radius:35px;margin: auto">
+              <div class="row mt-4">
+                <span style="color: white;margin: auto">{{ psyc.name }}
+                  {% if psyc.gender=='男' %}
+                    <img src="{{ url_for('static',filename='images/男.png') }}">
+                  {% else %}
+                    <img src="{{ url_for('static',filename='images/女.png') }}">
+                  {% endif %}
+                </span>
+              </div>
+              <div class="row mt-4">
+                <div style="margin: auto">
+                  {% for each in tag_list %}
+                    <div class="mt-1"
+                         style="border: 1px solid;width: 65px;height: 20px;border-color:white;border-radius: 10px;text-align: center;display: inline-block">
+                    <span style="font-size: 10px ;color:white;display: block;">
+                      {{ each }}
+                    </span>
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+              <div class="row mt-8">
+                <div class="row mt-4" style="color: white;margin: auto">
+                  <span style="display: block;">
+                    关注数:{{ psyc.follow_times }}
+                  </span>
+                  <span style="display:block;margin-left: 100px">
+                    被问次数:{{ psyc.question_times }}
+                  </span>
+                  <span style="display: block;margin-left: 100px">
+                    回答次数:{{ psyc.answer_times }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3" style="padding: 0px">
+              {% if is_follow %}
+                <div class="row mt-4">
+                  <a href="{{ url_for('user.follow_psyc',p_id=psyc.id,follow_type='取消关注') }}" id="follow"
+                     style="color:white;margin: auto; text-decoration: none">取消关注</a>
+                </div>
+              {% else %}
+                <div class="row mt-4">
+                  <a href="{{ url_for('user.follow_psyc',p_id=psyc.id,follow_type='关注') }}" id="follow"
+                     style="color:white;margin: auto; text-decoration: none">关注</a>
+                </div>
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+        <div class="row" style="width: 100%;height: 200px;margin: 0px;border: 1px solid;border-radius: 5px;
+          border-color: RGB(221,221,221);">
+          <div class="row" style="height: 41px;width: 100%;margin: 0px;border-bottom: 1px solid;
+          border-color: RGB(221,221,221);
+          margin-left: 1px;background-color: #f5f5f5">
+            <span style="display: block;padding: 10px;width: 100%">私信提问</span>
+            <div style="padding: 10px;width: 100%">
+              <a href="{{ url_for('psychologist.private_messages',p_id=psyc.id) }}" class="btn btn-lg active"
+                 role="button"
+                 aria-pressed="true"
+                 style="display: block;width: 100%;background-color: #64bfa1;color: white"
+                 onclick="document.getElementById('form2').submit();return false;">
+                提问
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-1"></div>
+    </div>
+  </div>
+  <script>
+      window.onload = function () {
+          var Follow = document.getElementById("follow")
+          Follow.onclick = function () {
+              /*$.ajax(
+                  {
+                      url: "/psychologist/psyc_answer_messages",
+                      method: 'POST',
+                      data: {
+                          "follow_content": Follow.innerHTML,
+                          "stu_id": document.getElementById('stu_id').value,
+                          "messages": document.getElementById('talkwords').value,
+                      },
+                      success: function (data) {
+                      },
+                      error: function (e) {
+                          alert("error");
+                      }
+                  })*/
+          }
+      }
+  </script>
+{% endblock %}

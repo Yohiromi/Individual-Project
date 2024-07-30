@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <!-- basic -->
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <!-- mobile metas -->
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+      <!-- site metas -->
+      <title></title>
+      <meta name="keywords" content="">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <!-- site icon -->
+      <link rel="icon" href="{{ url_for('static',filename='404/images/fevicon.png') }}" type="image/png" />
+      <!-- bootstrap css -->
+      <link rel="stylesheet" href="{{ url_for('static',filename='404/css/bootstrap.min.css') }}" />
+      <!-- site css -->
+     <link rel="stylesheet" href="{{ url_for('static',filename='404/style.css') }}" />
+      <!-- responsive css -->
+      <link rel="stylesheet" href="{{ url_for('static',filename='404/css/responsive.css') }}" />
+      <!-- color css -->
+      <link rel="stylesheet" href="{{ url_for('static',filename='404/css/colors.css') }}" />
+      <!-- select bootstrap -->
+      <link rel="stylesheet" href="{{ url_for('static',filename='404/css/bootstrap-select.css') }}" />
+      <!-- scrollbar css -->
+      <link rel="stylesheet" href="{{ url_for('static',filename='404/css/perfect-scrollbar.css') }}" />
+      <!-- custom css -->
+      <link rel="stylesheet" href="{{ url_for('static',filename='404/css/custom.css') }}" />
+      <!-- calendar file css -->
+      <link rel="stylesheet" href="{{ url_for('static',filename='404/js/semantic.min.css') }}" />
+      <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+      <![endif]-->
+   </head>
+   <body class="inner_page error_404">
+      <div class="full_container">
+         <div class="container">
+            <div class="center verticle_center full_height">
+               <div class="error_page">
+                  <div class="center">
+                     <div class="error_icon">
+                        <img class="img-responsive" src="{{ url_for('static',filename='404/images/layout_img/error.png') }}" alt="#">
+                     </div>
+                  </div>
+                  <br>
+                  <h3>{{ msg }}</h3>
+                  <P>YOU SEEM TO BE TRYING TO FIND HIS WAY HOME</P>
+                  <div class="center"><a class="main_bt" href="{{ url_for('first_page') }}">返回首页</a></div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- jQuery -->
+      <script src="{{ url_for('static',filename='404/js/jquery.min.js') }}"></script>
+
+      <script src="{{ url_for('static',filename='404/js/popper.min.js') }}"></script>
+      <script src="{{ url_for('static',filename='404/js/bootstrap.min.js') }}"></script>
+      <!-- wow animation -->
+      <script src="{{ url_for('static',filename='404/js/animate.js') }}"></script>
+      <!-- select country -->
+      <script src="{{ url_for('static',filename='404/js/bootstrap-select.js') }}"></script>
+      <!-- nice scrollbar -->
+      <script src="{{ url_for('static',filename='404/js/perfect-scrollbar.min.js') }}"></script>
+      <script>
+         var ps = new PerfectScrollbar('#sidebar');
+      </script>
+      <!-- custom js -->
+      <script src="{{ url_for('static',filename='404/js/custom.js') }}"></script>
+   </body>
+</html>

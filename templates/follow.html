@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}大学生心理健康评估系统{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+  <div class="container-fluid">
+  <div class="row" style="box-shadow: 5px 5px 5px #aaaaaa ">
+      <div class="col-md-12">
+        <div class="page_title" style="text-align: center">
+          <h2>关注列表</h2>
+        </div>
+      </div>
+    </div>
+    {% for each  in psyc_list %}
+    <div class="item mb-5 mt-4">
+    <div class="media" style="border-top: 1px solid #dddddd;border-bottom: 1px solid #dddddd;">
+      <img class="mr-3 img-fluid post-thumb d-none d-md-flex" style="width: 110px;height: 110px"
+           src="data:image/jpg;base64,{{ each.Users.img_base64 }}" alt="image">
+      <div class="media-body">
+        <h3 class="title mb-1"><a href="{{ url_for('psychologist.get_psychologist',psyc_id=each.id) }}">{{ each.name }}</a></h3>
+        <div class="meta mb-1">
+          <span class="date">被关注数：{{ each.follow_times }}</span>
+          <span class="time">被提问数：{{ each.question_times }}</span>
+          <span class="comment">回答数：{{ each.answer_times }}</span>
+        </div>
+        <a class="more-link" href="{{ url_for('psychologist.get_psychologist',psyc_id=each.id) }}" style="text-decoration: none">查看更多</a>
+      </div><!--//media-body-->
+      <div class="media-body text-center" style="margin: auto">
+        <a href="{{ url_for('user.defollow_psyc',p_id=each.id,follow_type='取消关注') }}" class="btn btn-default btn-lg active" role="button" aria-pressed="true">取消关注</a>
+      </div>
+    </div><!--//media-->
+  </div>
+    {% endfor %}
+  </div>
+{% endblock %}

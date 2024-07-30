@@ -1,0 +1,37 @@
+{% extends "psyc_base.html" %}
+{% block title %}录入问卷题目{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+  <div class="row mt-4">
+    <div class="col"></div>
+    <div class="col">
+      <form method="post" action="{{ url_for('wenjuan.psyc_del_wenjuan') }}" id="form2">
+        <label for="exampleInputEmail1">选择要删除的问卷名</label>
+        <fieldset class="form-group row" id="del_tag_list">
+          <div class="col-sm-10">
+            {% for each in wenjuan_list1 %}
+              <div class="form-check">
+              <input class="form-check-input" type="radio" name="wname" id="gridRadios1" value="{{each}}">
+              <label class="form-check-label" for="gridRadios1">
+               {{ each }}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+        <a href="#" class="btn  btn-lg active mt-2" role="button" id="del"
+           onclick="document.getElementById('form2').submit();return false;"
+           aria-pressed="true" style="background-color: #ec5151;color: white;display: none">删除问卷</a>
+      </form>
+    </div>
+    <div class="col"></div>
+  </div>
+  <script>
+    window.onload=function () {
+      document.getElementById("del_tag_list").onclick=function () {
+        document.getElementById("del").style.display='inline'
+      }
+    }
+  </script>
+{% endblock %}

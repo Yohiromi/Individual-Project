@@ -1,0 +1,13 @@
+.user_central_li{
+    display: flex;
+    width: 250px;
+    margin: auto;
+}
+.user_central_img{
+    width: 220px;
+    height: 200px;
+    margin: auto;
+}
+.user_central_li_imag{
+    display: flex;
+}

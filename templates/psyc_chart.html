@@ -1,0 +1,66 @@
+{% extends "psyc_base.html" %}
+{% block title %}问卷分析{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/wenjuan.css') }}">
+  <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+{% endblock %}
+{% block body %}
+  <div class="container-fluid">
+    <div class="row"
+         style="width: 800px;height: 300px;border: 1px solid #dddddd;margin: auto;margin-top: 80px;background-color:#f5f5f5 ">
+      <div id="main" style="width: 800px;height:300px;margin: auto;margin-top: 20px"></div>
+    </div>
+    <div class="row"
+         style="width: 800px;height: 100px;border: 1px solid #dddddd;margin: auto;margin-top: 60px;background-color:white ">
+      <div class="row" style="padding: 10px;width: 100%;height: 20px;">
+        <p style="display:block;color: #41b5d8;margin-left: 20px;height: 20px">对照分析</p>
+      </div>
+      <div class="row" style="padding: 10px;padding-top:5px;width: 100%;height: 20px;margin-top: 10px">
+        <p style="display:block;margin-left: 20px;height: 20px">{{ analysis_msg }}</p>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+      // 基于准备好的dom，初始化echarts实例
+      var myChart = echarts.init(document.getElementById('main'));
+      // 指定图表的配置项和数据
+      var option = {
+              title: {
+                  text: '{{ username }}用户的分析报告'
+              },
+              tooltip: {},
+              legend: {
+                  data: ['{{ wenjuan_exts[0].wenjuan_name }}']
+              },
+              xAxis: {
+                  name:'测试次数',
+                  data: [
+                      {% for ii in wenjuan_exts %}
+                          {{ ii.test_times }},
+                      {% endfor %}
+                  ]
+              },
+              yAxis: {
+                  name:'分数',
+                  ticks: {
+                      beginAtZero: true
+                  },
+              },
+              series: [
+                  {
+                  name: '{{ wenjuan_exts[0].wenjuan_name }}',
+                  type: 'bar',
+                  data: [
+                      {% for each in wenjuan_exts %}
+                          {{ each.total_score }},
+                      {% endfor %}
+                  ],
+
+              },
+              ]
+          }
+      ;
+      // 使用刚指定的配置项和数据显示图表。
+      myChart.setOption(option);
+  </script>
+{% endblock %}

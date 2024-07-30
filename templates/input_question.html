@@ -1,0 +1,66 @@
+{% extends "psyc_base.html" %}
+{% block title %}录入问卷题目{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+  <div class="row mt-4">
+    <div class="col"></div>
+    <div class="col">
+      <form method="post"
+            action="{{ url_for("wenjuan.input_question",input_type=input_type,wname=wname,test_type=test_type,img_name=img_name) }}"
+            enctype="multipart/form-data">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="exampleInputEmail1">输入题目</label>
+            {% if input_type=='same' %}
+              <textarea type="text" class="form-control" rows="10" placeholder="请输入题目" name="title"></textarea>
+            {% else %}
+              <input type="text" class="form-control" placeholder="请输入题目" name="title">
+            {% endif %}
+          </div>
+            <div id="span_div" style="display: inline;margin-top: 10px">
+              <label for="exampleInputPassword1">有<input type="text" name="option_num">个选项</label>
+              <button type="button" id="span_ok">确认</button>
+            </div>
+          <div class="form-group" style="display: none" id="input_group">
+            <!--<label for="exampleInputEmail1">输入选项</label>
+            <input type="text" class="form-control mt-2" name="options">
+            <small id="emailHelp" class="form-text text-muted">选项以空格分隔</small>
+            <label for="exampleInputEmail1">输入选项分数</label>
+            <input type="text" class="form-control mt-2" name="point">
+            <small id="emailHelp" class="form-text text-muted">选项以空格分隔</small>-->
+            {% for message in get_flashed_messages() %}
+              <div class="form-group">
+                <div class="text-danger">{{ message }}</div>
+              </div>
+            {% endfor %}
+          </div>
+
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">提交</button>
+        {% if input_type!='same' %}
+          <a href="{{ url_for('first_page') }}" class="btn btn-success btn-lg active mt-2" role="button"
+             aria-pressed="true">完成输入</a>
+        {% endif %}
+      </form>
+    </div>
+    <div class="col"></div>
+  </div>
+  <script>
+      window.onload = function () {
+          var Span_div = document.getElementById("span_div")
+          var Span_ok = document.getElementById("span_ok")
+          var Input_group=document.getElementById("input_group")
+          var span_num
+          let i
+          Span_ok.onclick=function () {
+              Input_group.style.display='inherit'
+              Span_div.style.display='none'
+              span_num = $("input[name='option_num']").val()
+              for (i = 1; i <=span_num; i++) {
+                  Input_group.innerHTML=Input_group.innerHTML+'选项:'+i+'<input type="text"  name="option'+i+'">分值为：<input type="text" size="12" name="point'+i+'">'
+              }
+          }
+      }
+  </script>
+{% endblock %}

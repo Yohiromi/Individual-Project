@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}用户中心{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for("static",filename="css/user_central.css") }}">
+  <!-- bootstrap css -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap/bootstrap.min.css') }}"/>
+  <!-- site css -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}"/>
+{% endblock %}
+{% block body %}
+  <div class="full_container">
+    <div class="inner_container">
+      <!-- Sidebar  -->
+      <!-- end topbar -->
+      <!-- dashboard inner -->
+      <div class="midde_cont">
+        <div class="container-fluid">
+          <div class="row column_title">
+            <div class="col-md-12">
+              <div class="page_title">
+                <h2>个人中心</h2>
+              </div>
+            </div>
+          </div>
+          <!-- row -->
+          <div class="row column1">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+              <div class="white_shd full margin_bottom_30">
+                <div class="full graph_head">
+                  <div class="heading1 margin_0">
+                    <h2>用户中心</h2>
+                  </div>
+                </div>
+                <div class="full price_table padding_infor_info">
+                  <div class="row">
+                    <!-- user profile section -->
+                    <!-- profile image -->
+                    <div class="col-lg-12">
+                      <div class="full dis_flex center_text">
+                        <div class="profile_img"><img width="180" class="rounded-circle"
+                                                      src="data:image/jpg;base64,{{ user.img_base64 }}" alt="#"/></div>
+                        <div class="profile_contant">
+                          <div class="contact_inner">
+                            <h3>{{ user_exts.name }}</h3>
+                            <p><strong>About: </strong>{{ user.identity }}</p>
+                            <ul class="list-unstyled">
+                              <li>邮箱: {{ user.email }}</li>
+                              <li>电话: {{ user_exts.tel }}</li>
+                              <li>用户名：{{ user.username }}</li>
+                              <li>性别：{{ user_exts.gender }}</li>
+                              <li>年龄：{{ user_exts.age }}</li>
+                              <li>学校：{{ user_exts.school }}</li>
+                              <li>专业：{{ user_exts.major }}</li>
+                              <li>年级：{{ user_exts.grade }}</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- profile contant section -->
+                      <div class="full inner_elements margin_top_30">
+                        <div class="tab_style2">
+                          <div class="tabbar">
+                            <nav>
+                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab"
+                                   href="#recent_activity" role="tab" aria-selected="true">当前消息</a>
+                              </div>
+                            </nav>
+                            <div class="tab-content" id="nav-tabContent">
+                              <div class="tab-pane fade show active" id="recent_activity" role="tabpanel"
+                                   aria-labelledby="nav-home-tab">
+                                <div class="msg_list_main">
+                                  <ul class="msg_list">
+                                    {% for i in range(len_of_psyc) %}
+                                      <li>
+                                        <span><img src="data:image/jpg;base64,{{ psyc_user_list[i].img_base64 }}" class="img-responsive"
+                                                   alt="#"></span>
+                                        <span>
+                                         <a href="{{ url_for('psychologist.private_messages',p_id=psyc_list[i].id) }}" class="name_user">{{ psyc_list[i].name }}</a>
+                                          <span class="msg_user">点击咨询心理医生</span>
+                                           </span>
+                                      </li>
+                                    {% endfor %}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- end user profile section -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2"></div>
+            </div>
+            <!-- end row -->
+          </div>
+          <!-- footer -->
+          <div class="container-fluid">
+            <div class="row">
+              <div class="footer">
+                <p>Copyright &copy; 2022.Company name All rights reserved.<a target="_blank"
+                                                                             href="#"></a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end dashboard inner -->
+      </div>
+    </div>
+  </div>
+{% endblock %}

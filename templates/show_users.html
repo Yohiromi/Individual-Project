@@ -1,0 +1,211 @@
+{% extends "amd_base.html" %}
+{% block title %}全部用户{% endblock %}
+{% block head %}
+  <!-- PAGE TITLE HERE -->
+
+  <!-- Datatable -->
+  <link href="{{ url_for('static',filename='amd/css/jquery.dataTables.min.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/弹窗.css') }}">
+
+  <!-- Custom Stylesheet -->
+{% endblock %}
+{% block body %}
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Profile Datatable</h4>
+        </div>
+        <div class="card-header">
+          <button type="button" id="triggerBtnadd" class="btn btn-primary" style="height:50px;width:100px;">
+            <ion-icon name="add-circle-outline" style="width: 25px;height: 25px;"></ion-icon>
+          </button>
+        </div>
+
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="example3" class="display" style="min-width: 845px">
+              <thead>
+              <tr>
+                <th>id</th>
+                <th>头像</th>
+                <th>用户名</th>
+                <th>权限</th>
+                <th>身份</th>
+                <th>邮箱</th>
+                <th>注册时间</th>
+                <th>操作</th>
+              </tr>
+              </thead>
+              <tbody>
+              {% for each in  all_users %}
+                <tr>
+                  <td>{{ each.id }}</td>
+                  <td><img class="rounded-circle" width="35" src="data:image/jpg;base64,{{ each.img_base64 }}" alt="">
+                  </td>
+                  <td>{{ each.username }}</td>
+                  <td>{{ each.jurisdiction }}</td>
+                  <td>{{ each.identity }}</td>
+                  <td><a href="javascript:void(0);"><strong>{{ each.email }}</strong></a></td>
+                  <td>{{ each.join_time }}</td>
+                  <td>
+                    <div class="d-flex">
+                      <a href="#" class="btn btn-primary shadow btn-xs sharp me-1" id="triggerBtn{{ each.id }}"><i
+                              class="fas fa-pencil-alt"></i></a>
+                      {% if each.identity!='管理员' %}
+                        <a href="{{ url_for('user.del_user',u_id=each.id) }}"
+                           class="btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a>
+                      {% endif %}
+                    </div>
+                  </td>
+                </tr>
+                <div id="myModal{{ each.id }}" class="modal">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h2>编辑信息</h2>
+                      <span id="closeBtn{{ each.id }}" class="close">×</span>
+                    </div>
+                    <div class="modal-body">
+                      <form method="post" action="{{ url_for('user.amd_change_user',u_id=each.id) }}"
+                            enctype="multipart/form-data">
+                        <div class="form-group">
+                          <label for="exampleInputPassword1">上传头像</label>
+                          <input type="file" size="30" class="form-control" name="photo">
+                          <small id="emailHelp" class="form-text text-muted">图片不得大于30KB。</small>
+                          <small id="emailHelp" class="form-text text-muted">图片格式只能为：'png', 'jpg', 'gif', 'jpeg'</small>
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">用户名</label>
+                          <input type="text" class="form-control" name="username" value="{{ each.username }}">
+                        </div>
+                        <div class="form-group">
+                          <label for="exampleInputEmail1">邮箱</label>
+                          <input type="email" class="form-control" name="email" value="{{ each.email }}">
+                        </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-success">提交</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+
+              {% endfor %}
+              <div id="myModaladd" class="modal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h2>添加用户</h2>
+                    <span id="closeBtnadd" class="close">×</span>
+                  </div>
+                  <div class="modal-body">
+                    <form method="post" action="{{ url_for('user.amd_add_user') }}" enctype="multipart/form-data">
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">上传头像</label>
+                        <input type="file" size="30" class="form-control" name="photo">
+                        <small id="emailHelp" class="form-text text-muted">图片不得大于30KB。</small>
+                        <small id="emailHelp" class="form-text text-muted">图片格式只能为：'png', 'jpg', 'gif', 'jpeg'</small>
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">用户名</label>
+                        <input type="text" class="form-control" name="username">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">密码</label>
+                        <input type="text" class="form-control" name="password">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">权限</label>
+                        <select class="custom-select" id="inputGroupSelect01" name="jurisdiction" style="width: 100%;height: 50px;background-color: white">
+                          <option selected>请选择</option>
+                          <option value="管理员">管理员</option>
+                          <option value="普通用户">普通用户</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">身份</label>
+                        <select class="custom-select" id="inputGroupSelect01" name="identity" style="width: 100%;height: 50px;background-color: white">
+                          <option selected>请选择</option>
+                          <option value="管理员">管理员</option>
+                          <option value="心理医生">心理医生</option>
+                          <option value="学生">学生</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">邮箱</label>
+                        <input type="email" class="form-control" name="email">
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">提交</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <!--<tr>
+                <td><img class="rounded-circle" width="35" src="static/picture/pic11.jpg" alt=""></td>
+                <td>Jenette Caldwell</td>
+                <td>Development Lead</td>
+                <td>Female</td>
+                <td>B.A, B.C.A</td>
+                <td><a href="javascript:void(0);"><strong>123 456 7890</strong></a></td>
+                <td><a href="javascript:void(0);"><strong>info@example.com</strong></a></td>
+                <td>2011/09/03</td>
+                <td>
+                  <div class="d-flex">
+                    <a href="#" class="btn btn-primary shadow btn-xs sharp me-1"><i class="fas fa-pencil-alt"></i></a>
+                    <a href="#" class="btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a>
+                  </div>
+                </td>
+              </tr>-->
+              </tbody>
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+      (function () {
+
+              /*模态框显示*/
+              {% for ee in  all_users %}
+                  document.getElementById("triggerBtn{{ ee.id }}").onclick = function () {
+                      //hat.show();
+                      console.log(document.getElementById("myModal{{ ee.id }}"));
+                      document.getElementById("myModal{{ ee.id }}").style.display = "block";
+                  }
+
+                  /*模态框关闭*/
+                  document.getElementById("closeBtn{{ ee.id }}").onclick = function () {
+                      document.getElementById("myModal{{ ee.id }}").style.display = "none";
+                  }
+              {% endfor %}
+
+              document.getElementById("triggerBtnadd").onclick = function () {
+                  //hat.show();
+                  console.log(document.getElementById("myModaladd"));
+                  document.getElementById("myModaladd").style.display = "block";
+              }
+
+              /*模态框关闭*/
+              document.getElementById("closeBtnadd").onclick = function () {
+                  document.getElementById("myModaladd").style.display = "none";
+                  /*当用户点击模态框内容之外的区域，模态框也会关闭*/
+                  /*modalBox.outsideClick = function () {
+                      var modal = this.modal;
+                      window.onclick = function (event) {
+                          if (event.target == modal) {
+                              modal.style.display = "none";
+                          }
+                      }
+                  }*/
+              }
+          }
+      )();
+  </script>
+  <script src="https://www.17sucai.com/preview/1097306/2021-09-08/xhtml/vendor/apexchart/apexchart.js"></script>
+  <!-- Datatable -->
+  <script src="{{ url_for('static',filename='amd/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ url_for('static',filename='amd/js/datatables.init.js') }}"></script>
+{% endblock %}

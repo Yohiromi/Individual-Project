@@ -1,0 +1,59 @@
+{% extends "psyc_base.html" %}
+{% block title %}添加题目{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+  <div class="row mt-4">
+    <div class="col"></div>
+    <div class="col">
+      <form method="post" action="{{ url_for('wenjuan.add_to_wenjuan') }}" id="form2">
+        <label for="exampleInputEmail1" id="title_of_add">选择添加的问卷</label>
+        <fieldset class="form-group row" id="all_wname">
+          <div class="col-sm-10">
+            {% for each in wenjuan_list1 %}
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="wname" id="gridRadios1" value="{{ each }}" >
+                <label class="form-check-label" for="gridRadios1">
+                  {{ each }}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+        {% for message in get_flashed_messages() %}
+          <div class="form-group">
+            <div class="text-danger">{{ message }}</div>
+          </div>
+        {% endfor %}
+        <div class="form-group" id="add_group" style="display: none">
+          <label for="exampleInputEmail1">输入题目</label>
+          <textarea type="text" class="form-control" rows="10" placeholder="请输入题目" name="title"></textarea>
+          <label for="exampleInputEmail1">输入选项</label>
+          <input type="text" class="form-control mt-2" name="options">
+          <small id="emailHelp" class="form-text text-muted">选项以空格分隔</small>
+          <label for="exampleInputEmail1">输入选项分数</label>
+          <input type="text" class="form-control mt-2" name="point">
+          <small id="emailHelp" class="form-text text-muted">选项以空格分隔</small>
+        </div>
+        <div class="form-group">
+          <a href="#" class="btn  btn-lg active mt-2" role="button" id="add"
+             aria-pressed="true" style="background-color: #64bfa1;color: white;display: none"
+             onclick="document.getElementById('form2').submit();return false;">添加</a>
+        </div>
+      </form>
+    </div>
+    <div class="col"></div>
+  </div>
+  <script>
+      window.onload = function () {
+          var Add = document.getElementById("add")
+          var All_wname = document.getElementById("all_wname")
+          All_wname.onclick = function () {
+              document.getElementById("title_of_add").style.display = "none"
+              Add.style.display = "inline"
+              document.getElementById("add_group").style.display = "inline"
+              All_wname.style.display='none'
+          }
+      }
+  </script>
+{% endblock %}

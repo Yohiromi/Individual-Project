@@ -1,0 +1,8 @@
+.main{
+    display: flex;
+}
+.right
+{
+    width: 30px;
+    height: 1000px;
+}

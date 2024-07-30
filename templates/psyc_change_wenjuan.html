@@ -1,0 +1,182 @@
+{% extends "psyc_base.html" %}
+{% block title %}修改问卷{% endblock %}
+{% block head %}
+  <script src="{{ url_for('static',filename='jquery/jquery.3.6.min.js') }}"></script>
+{% endblock %}
+{% block body %}
+  <div class="row mt-4">
+    <div class="col">
+    </div>
+    <div class="col">
+      <form method="post" action="{{ url_for("wenjuan.change_wenjuan",wname=wname,judgment=judgment) }}"
+            enctype="multipart/form-data" id="wenjuan_form">
+        <div class="form-group">
+          <label for="exampleInputPassword1">修改问卷图片</label>
+          <input type="file" size="30" class="form-control" name="photo">
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">问卷名</label>
+          <input type="text" class="form-control" name="wname" value="{{ wenjuan.wenjuan_name }}">
+        </div>
+        <fieldset class="form-group row">
+          <label class="exampleInputEmail1">修改问卷的类型</label>
+          <div class="col-sm-10">
+            {% for kk in tag_list %}
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="test_type" id="gridRadios1" value="{{ kk }}" checked>
+                <label class="form-check-label" for="gridRadios1">
+                  {{ kk }}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+        </fieldset>
+        <div class="form-group">
+          <label for="exampleInputPassword1" id="biaozhun">评判标准:</label>
+        </div>
+        <div class="form-group" id="span_form">
+          <button type="button" class="btn btn-primary btn-sm" id="change_judge" style="display: inline">修改评判标准</button>
+
+          <button type="button" class="btn btn-secondary btn-sm" id="default" style="display: inline">使用默认标准</button>
+
+          <div id="span_div" style="display: none">
+            <label for="exampleInputPassword1">请输入划分几个区间</label>
+            <input type="text" class="form-control" name="span_num">
+            <button type="button" class="btn btn-success btn-block" id="span_ok">确认</button>
+          </div>
+          <div id="span_input" style="display: inline">
+            <!--第0个区间：<input type="text" style="display: inline-block" size="6">~<input  type="text" style="display: inline-block" size="6">该区间标准为：<input  type="text" style="display: inline-block" size="8">-->
+            {% for message in get_flashed_messages() %}
+              <div class="form-group">
+                <div class="text-danger">{{ message }}</div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1" id="biaozhun">题目：</label>
+        </div>
+        <div class="form-groupr">
+          <button type="button" class="btn  btn-sm" id="change_title"
+                  style="display: inline;margin-bottom: 10px;background-color: #56b750;color: white">修改题目
+          </button>
+        </div>
+
+        <div class="form-group row" style="display: none" id="all_title">
+          <div class="col-sm-10 offset-sm-2">
+            {% for kk in range(len_of_wenjuan) %}
+              <div>
+                <input class="form-check-input" type="checkbox" id="gridCheck1" name="r"
+                       value="{{ kk }}">
+                <label class="form-check-label" for="gridCheck1">
+                  {{ all_wenjuan[kk].exercise_title }}
+                </label>
+              </div>
+            {% endfor %}
+          </div>
+          <button type="button" class="btn btn-sm" id="btn_title"
+                  style="display: inline;background-color: #11c0e4;color: white">
+            确认题目
+          </button>
+        </div>
+
+        <div id="form_group1" style="display: none">
+          {% for ii in range(len_of_wenjuan) %}
+            <div class="form-group" id="title_detail{{ ii }}" style="display: none">
+              <input type="hidden" name="{{ all_wenjuan[ii].id }}" value="{{ all_wenjuan[ii].id }}">
+              题目{{ ii+1 }}：<input type="text" size="44" name="title{{ ii }}"
+                                  value="{{ all_wenjuan[ii].exercise_title }}">
+              {% for jj in range(len_of_option[ii]) %}
+                选项{{ jj+1 }}：<input type="text" size="29" name="option{{ ii }}{{ jj }}"
+                                    value="{{ option_list[ii][jj] }}">
+                分数：<input type="text" size="7" name="point{{ ii }}{{ jj }}"
+                          value="{{ point_list[ii][jj] }}">
+                <br>
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+        <a href="{{ url_for('wenjuan.change_wenjuan',wname=wname,judgment=judgment) }}"
+           class="btn btn-primary btn-block"
+           onclick="document.getElementById('wenjuan_form').submit();return false;">提交</a>
+      </form>
+      <input type="hidden" name="Max" value="{{ Max }}">
+      <input type="hidden" name="Min" value="{{ Min }}">
+    </div>
+    <div class="col"></div>
+  </div>
+  <script>
+      window.onload = function () {
+          var Change_judge = document.getElementById("change_judge")
+          var Default = document.getElementById("default")
+          var Span_div = document.getElementById("span_div")
+          var Span_ok = document.getElementById("span_ok")
+          var Span_form = document.getElementById("same_form")
+          var Span_input = document.getElementById("span_input")
+          var Change_title = document.getElementById("change_title")
+          var Btn_title = document.getElementById("btn_title")
+          let i
+          let j
+          let span_num
+          let select_num = 0
+          let len_judgment =
+          {{ len_of_judgment }}
+          var Max =
+          {{ Max }}
+          var Min =
+          {{ Min }}
+          var ck_taskIds = []
+          $('#btn_title').click(function () {//用于获得复选框的题目的编号
+              $("input[name='r']:checked").each(function () {
+                  ck_taskIds.push($(this).val());
+                  select_num++
+              });
+              document.getElementById("form_group1").style.display = 'inline'
+              document.getElementById("all_title").style.display = 'none'
+              for (let xx = 0; xx < select_num; xx++) {
+                  document.getElementById("title_detail" + ck_taskIds[xx]).style.display = 'inline'
+              }
+
+          });
+          Change_judge.onclick = function () {
+              Span_div.style.display = 'inline'
+              Default.style.display = 'none'
+              Change_judge.style.display = 'none'
+          }
+          Change_title.onclick = function () {
+              document.getElementById("all_title").style.display = 'inline'
+              Change_title.style.display = 'none'
+          }
+          Default.onclick = function () {
+              Default.style.display = 'none'
+              Change_judge.style.display = 'none'
+              document.getElementById("biaozhun").style.display = 'none'
+              Span_input.innerHTML = Span_input.innerHTML + '<input type="hidden" name="is_default" value="default"> ';
+              {% for j in range(1,len_of_judgment) %}
+                  str = '第{{ j }}个区间：<input type="text" style="display: inline-block" value="{{ span_list[j][0] }}" disabled="disabled"  size="6">~<input  type="text" value="{{ span_list[j][-1] }}" disabled="disabled" style="display: inline-block" size="6">该区间标准为：<input  type="text" value="{{ span_list[j][1] }}" disabled="disabled" style="display: inline-block" size="8">';
+                  Span_input.innerHTML = Span_input.innerHTML + str;
+              {% endfor %}
+          }
+          Span_ok.onclick = function () {
+              span_num = $("input[name='span_num']").val()
+              Span_div.style.display = 'none'
+              Span_input.innerHTML = Span_input.innerHTML + '<input type="hidden" name="is_default" value="not_default"> ';
+              for (i = 1; i <= span_num; i++) {
+                  if (i === 1) {
+                      str = '第' + i + '个区间：<input type="text" name="span' + i + 'min" style="display: inline-block" value=' + Min + ' readonly="readonly"  size="6">~<input  type="text" name="span' + i + 'max" style="display: inline-block" size="6">该区间标准为：<input  type="text" name="span' + i + 'norm" style="display: inline-block" size="8">';
+                      Span_input.innerHTML = Span_input.innerHTML + str;
+                  } else if (i == span_num) {
+                      str = '第' + i + '个区间：<input type="text" name="span' + i + 'min" style="display: inline-block"  size="6">~<input  type="text" name="span' + i + 'max" readonly="readonly" value="' + Max + '" style="display: inline-block" size="6" >该区间标准为：<input  type="text" name="span' + i + 'norm" style="display: inline-block" size="8">';
+                      Span_input.innerHTML = Span_input.innerHTML + str;
+                  } else {
+                      str = '第' + i + '个区间：<input type="text" name="span' + i + 'min" style="display: inline-block"  size="6">~<input  type="text" name="span' + i + 'max"  style="display: inline-block" size="6" >该区间标准为：<input  type="text" name="span' + i + 'norm" style="display: inline-block" size="8">';
+                      Span_input.innerHTML = Span_input.innerHTML + str;
+                  }
+
+              }
+
+          }
+
+      }
+  </script>
+{% endblock %}

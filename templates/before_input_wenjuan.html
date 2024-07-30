@@ -1,0 +1,106 @@
+{% extends "psyc_base.html" %}
+{% block title %}录入问卷题目{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+  <div class="row mt-4">
+    <div class="col"></div>
+    <div class="col">
+      <div style="display: none" id="same_div">
+        <form method="post" action="{{ url_for('wenjuan.before_input_pro',input_type='same') }}"
+              enctype="multipart/form-data" id="same_form">
+          <label for="exampleInputEmail1">输入该问卷的名字</label>
+          <input type="text" class="form-control mt-2" name="wname">
+          <div class="form-group">
+            <label for="exampleInputPassword1">上传问卷图片</label>
+            <input type="file" size="30" class="form-control" name="same_photo">
+          </div>
+          <fieldset class="form-group row">
+            <label class="exampleInputEmail1">选择问卷的类型</label>
+            <div class="col-sm-10">
+              {% for kk in tag_list %}
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="test_type" id="gridRadios1" value="{{ kk }}">
+                  <label class="form-check-label" for="gridRadios1">
+                    {{ kk }}
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <a href="{{ url_for('wenjuan.before_input_pro',input_type='same') }}"
+             class="btn btn-primary btn-lg active mt-2"
+             role="button" id="same_btn" onclick="document.getElementById('same_form').submit();return false;"
+             aria-pressed="true" style="background-color: red">提交</a>
+        </form>
+      </div>
+      <div style="display: none" id="not_same_div">
+        <form method="post" action="{{ url_for('wenjuan.before_input_pro',input_type='not_same') }}"
+              enctype="multipart/form-data" id="not_same_form">
+          <label for="exampleInputEmail1">输入该问卷的名字</label>
+          <input type="text" class="form-control mt-2" name="wname">
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">上传问卷图片</label>
+            <input type="file" size="30" class="form-control" name="not_same_photo">
+          </div>
+          <fieldset class="form-group row">
+            <label class="exampleInputEmail1">选择问卷的类型</label>
+            <div class="col-sm-10">
+              {% for kk in tag_list %}
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="test_type" id="gridRadios1" value="{{ kk }}">
+                  <label class="form-check-label" for="gridRadios1">
+                    {{ kk }}
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+          </fieldset>
+          <a href="{{ url_for('wenjuan.before_input_pro',input_type='not_same') }}"
+             class="btn btn-primary btn-lg active mt-2"
+             role="button" id="not_same_btn" onclick="document.getElementById('not_same_form').submit();return false;"
+             aria-pressed="true" style="background-color: red">提交</a>
+        </form>
+      </div>
+      <button type="button" class="btn btn-primary btn-lg active mt-2"
+              role="button" id="same"
+              aria-pressed="true" style="background-color: red;display: inline">选项相同
+      </button>
+      <button type="button" class="btn  btn-lg active mt-2"
+              role="button" id="not_same"
+              aria-pressed="true" style="background-color: red;display:inline;color: white ">选项不同
+      </button>
+      {% for message in get_flashed_messages() %}
+        <div class="form-group">
+          <div class="text-danger">{{ message }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="col"></div>
+  </div>
+  <script>
+      window.onload = function () {
+          {% if 'tag' in tag_list %}
+            alert('请先修改个人擅长标签！')
+              window.location.replace("{{ url_for('first_page') }}");
+          {% endif %}
+          var Same = document.getElementById("same")
+          var NotSame = document.getElementById("not_same")
+          var Same_btn = document.getElementById("same_btn")
+          var Not_same_btn = document.getElementById("not_same_btn")
+          Same.onclick = function () {
+              Same.style.display = 'none'
+              NotSame.style.display = 'none'
+              document.getElementById("same_div").style.display = 'inline'
+          }
+          NotSame.onclick = function () {
+              Same.style.display = 'none'
+              NotSame.style.display = 'none'
+              document.getElementById("not_same_div").style.display = 'inline'
+          }
+
+      }
+  </script>
+{% endblock %}

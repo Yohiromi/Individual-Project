@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}{% endblock %}</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport'/>
+  <link rel="icon" href="{{ url_for('static',filename='images/网页标志1.jpg') }}" type="image/x-icon"/><!--网页标签-->
+  <link rel="stylesheet" href="{{ url_for('static',filename='amd/css/all.min.css') }}">
+  <!-- Fonts and icons -->
+  <script src="{{ url_for('static',filename='assets/js/plugin/webfont/webfont.min.js') }}"></script>
+  <script>
+      WebFont.load({
+          google: {"families": ["Lato:300,400,700,900"]},
+          custom: {
+              "families": ["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"],
+              urls: ['assets/css/fonts.min.css']
+          },
+          active: function () {
+              sessionStorage.fonts = true;
+          }
+      });
+  </script>
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='bootstrap/bootstrap.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static',filename='assets/css/atlantis.min.css') }}">
+
+  <!-- CSS Just for demo purpose, don't include it in your project -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='assets/css/demo.css') }}">
+
+
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<div class="main-header" style="background-color: #56b750">
+  <!-- Logo Header -->
+  <div class="logo-header">
+    <a href="{{ url_for('first_page') }}" class="logo">
+      <img src="{{ url_for('static',filename='images/网页标志1.jpg') }}" alt="navbar brand" class="navbar-brand"
+           style="width: 45px;height: 45px">
+    </a>
+
+    <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse"
+            aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon">
+						<i class="icon-menu"></i>
+					</span>
+    </button>
+    <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+    <div class="nav-toggle">
+      <button class="btn btn-toggle toggle-sidebar">
+        <i class="icon-menu"></i>
+      </button>
+    </div>
+  </div>
+  <!-- End Logo Header -->
+
+  <!-- Navbar Header -->
+  <nav class="navbar navbar-header navbar-expand-lg">
+
+    <div class="container-fluid">
+        <div class="text-center" style="margin: auto">
+      <a  href="{{ url_for('first_page') }}" style="font-size: 25px;text-decoration: none;color: #23272b">大学生心理健康平台</a>
+    </div>
+      <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+        <li class="nav-item toggle-nav-search hidden-caret">
+          <a class="nav-link" data-toggle="collapse" href="#search-nav" role="button" aria-expanded="false"
+             aria-controls="search-nav">
+            <i class="fa fa-search"></i>
+          </a>
+        </li>
+
+        <li class="nav-item dropdown hidden-caret">
+          <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown"
+             aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-bell"></i>
+            <span class="notification">{{ len_of_msg }}</span>
+          </a>
+          <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
+            <li>
+              <div class="dropdown-title">您有{{ len_of_msg }}条消息</div>
+            </li>
+            <li>
+              <div class="notif-scroll scrollbar-outer">
+                <div class="notif-center">
+                  {% for i in range(len_of_msg) %}
+                    <form method="post" action="{{ url_for('psychologist.psyc_answer_msg') }}" id="form{{ i }}">
+                      <a href="{{ url_for('psychologist.psyc_answer_msg') }}" id="test_click"
+                         onclick="document.getElementById('form{{ i }}').submit();return false;">
+                        <input type="hidden" name="stu_id" value="{{ user_list[i].id }}">
+                        <div class="notif-img">
+                          <img src="data:image/jpg;base64,{{ user_list[i].img_base64 }}" alt="Img Profile">
+                        </div>
+                        <div class="notif-content">
+													<span class="block">
+														来自"{{ user_list[i].username }}"的私信
+													</span>
+                        </div>
+                      </a>
+                    </form>
+                  {% endfor %}
+                </div>
+              </div>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown hidden-caret">
+          {% if user %}
+            <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+              <div class="avatar-sm">
+                <img src="data:image/jpg;base64,{{ user.img_base64 }}" alt="..."
+                     class="avatar-img rounded-circle">
+              </div>
+            </a>
+            <ul class="dropdown-menu dropdown-user animated fadeIn">
+              <div class="dropdown-user-scroll scrollbar-outer">
+                <li>
+                  <div class="user-box">
+                    <div class="avatar-lg"><img src="data:image/jpg;base64,{{ user.img_base64 }}"
+                                                alt="image profile" class="avatar-img rounded"></div>
+                    <div class="u-text">
+                      <h4>{{ psyc_exts.name }}</h4>
+                      <p class="text-muted">{{ user.email }}</p><a
+                            href="{{ url_for('psychologist.psyc_personal_central') }}"
+                            class="btn btn-xs btn-secondary btn-sm">个人中心</a>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{{ url_for('user.logout') }}">登出</a>
+                </li>
+              </div>
+            </ul>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('user.login') }}">登录</a>
+            </li>
+            <li class="nav-item ml-2">
+              <a class="nav-link" href="{{ url_for('user.register') }}">注册</a>
+            </li>
+          {% endif %}
+      </ul>
+    </div>
+  </nav>
+  <!-- End Navbar -->
+</div>
+
+<div class="sidebar sidebar-style-2">
+  <div class="sidebar-wrapper scrollbar scrollbar-inner">
+    <div class="sidebar-content">
+      <div class="user">
+        {% if user %}
+          <div class="avatar-sm float-left mr-2">
+            <img src="data:image/jpg;base64,{{ user.img_base64 }}" alt="..."
+                 class="avatar-img rounded-circle">
+          </div>
+          <div class="info">
+            <a data-toggle="collapse" href="#collapseExample" aria-expanded="true">
+								<span>
+									{{ psyc_exts.name }}
+									<span class="user-level">{{ user.identity }}</span>
+									<span class="caret"></span>
+								</span>
+            </a>
+            <div class="clearfix"></div>
+
+            <div class="collapse in" id="collapseExample">
+              <ul class="nav">
+                <li>
+                  <a href="{{ url_for('psychologist.psyc_personal_central') }}">
+                    <span class="link-collapse">个人中心</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="">
+                    <span class="link-collapse">编辑个人信息</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{{ url_for('user.logout') }}">
+                    <span class="link-collapse">登出</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        {% else %}
+          <li class="nav-section">
+							<span class="sidebar-mini-icon">
+								<i class="fa fa-ellipsis-h"></i>
+							</span>
+            <a href="{{ url_for('user.login') }} " style="text-decoration: none;color: black;">
+              <span class="sub-item">登录</span>
+            </a>
+          </li>
+        {% endif %}
+      </div>
+
+      <ul class="nav nav-primary">
+        <li class="nav-section">
+							<span class="sidebar-mini-icon">
+								<i class="fa fa-ellipsis-h"></i>
+							</span>
+          <h4 class="text-section">Components</h4>
+        </li>
+        <li class="nav-item">
+          <a data-toggle="collapse" href="#maps">
+            <i class="fas fa-book"></i>
+            <p>问卷管理</p>
+            <span class="caret"></span>
+          </a>
+          <div class="collapse" id="maps">
+            <ul class="nav nav-collapse">
+              <li>
+                <a href="{{ url_for('wenjuan.before_input') }}">
+                  <span class="sub-item">输入问卷</span>
+                </a>
+              </li>
+              <li>
+                <a href="{{ url_for('wenjuan.psyc_del_wenjuan') }}">
+                  <span class="sub-item">删除问卷</span>
+                </a>
+              </li>
+              <li>
+                <a href="{{ url_for('wenjuan.add_to_wenjuan') }}">
+                  <span class="sub-item">添加题目</span>
+                </a>
+              </li>
+              <li>
+                <a href="{{ url_for('psychologist.psyc_before_chart') }}">
+                  <span class="sub-item">数据统计</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li class="mx-4" style="margin-top: 200px">
+          <a href="#">
+            <div class="row" style="width: 100%;margin: 0px">
+              <img src="{{ url_for('static',filename='images/网页标志1.jpg') }}"
+                   style="display: block;width: 75px;height: 75px;margin: auto">
+            </div>
+          </a>
+          <h5 style="color: black;text-align: center;margin-top: 5px">
+            大学生心理健康评估平台
+          </h5>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div class="main-panel">
+  <div class="content">
+    {% block body %}{% endblock %}
+  </div>
+</div>
+<script src="{{ url_for('static',filename='assets/js/core/jquery.3.2.1.min.js') }}"></script>
+<script src="{{ url_for('static',filename='assets/js/core/popper.min.js') }}"></script>
+<script src="{{ url_for('static',filename='assets/js/core/bootstrap.min.js') }}"></script>
+
+<!-- jQuery UI -->
+<script src="{{ url_for('static',filename='assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js') }}"></script>
+<script src="{{ url_for('static',filename='assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js') }}"></script>
+
+<!-- jQuery Scrollbar -->
+<script src="{{ url_for('static',filename='assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}"></script>
+
+
+<!-- Chart JS -->
+
+<script src="{{ url_for('static',filename='assets/js/plugin/chart.js/chart.min.js') }}"></script>
+
+<!-- jQuery Sparkline -->
+<script src="{{ url_for('static',filename='assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js') }}"></script>
+
+<!-- Chart Circle -->
+
+<script src="{{ url_for('static',filename='assets/js/plugin/chart-circle/circles.min.js') }}"></script>
+
+<!-- Datatables -->
+
+<script src="{{ url_for('static',filename='assets/js/plugin/datatables/datatables.min.js') }}"></script>
+
+<!-- Bootstrap Notify -->
+
+<script src="{{ url_for('static',filename='assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
+
+<!-- jQuery Vector Maps -->
+<script src="{{ url_for('static',filename='assets/js/plugin/jqvmap/jquery.vmap.min.js') }}"></script>
+<script src="{{ url_for('static',filename='assets/js/plugin/jqvmap/maps/jquery.vmap.world.js') }}"></script>
+
+<!-- Sweet Alert -->
+<script src="{{ url_for('static',filename='assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
+
+<!-- Atlantis JS -->
+<script src="{{ url_for('static',filename='assets/js/atlantis.min.js') }}"></script>
+
+<!-- Atlantis DEMO methods, don't include it in your project! -->
+<script src="{{ url_for('static',filename='assets/js/setting-demo.js') }}"></script>
+<script src="{{ url_for('static',filename='assets/js/demo.js') }}"></script>
+<script>
+    Circles.create({
+        id: 'circles-1',
+        radius: 45,
+        value: 60,
+        maxValue: 100,
+        width: 7,
+        text: 5,
+        colors: ['#f1f1f1', '#FF9E27'],
+        duration: 400,
+        wrpClass: 'circles-wrp',
+        textClass: 'circles-text',
+        styleWrapper: true,
+        styleText: true
+    })
+
+    Circles.create({
+        id: 'circles-2',
+        radius: 45,
+        value: 70,
+        maxValue: 100,
+        width: 7,
+        text: 36,
+        colors: ['#f1f1f1', '#2BB930'],
+        duration: 400,
+        wrpClass: 'circles-wrp',
+        textClass: 'circles-text',
+        styleWrapper: true,
+        styleText: true
+    })
+
+    Circles.create({
+        id: 'circles-3',
+        radius: 45,
+        value: 40,
+        maxValue: 100,
+        width: 7,
+        text: 12,
+        colors: ['#f1f1f1', '#F25961'],
+        duration: 400,
+        wrpClass: 'circles-wrp',
+        textClass: 'circles-text',
+        styleWrapper: true,
+        styleText: true
+    })
+
+    var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+
+    var mytotalIncomeChart = new Chart(totalIncomeChart, {
+        type: 'bar',
+        data: {
+            labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
+            datasets: [{
+                label: "Total Income",
+                backgroundColor: '#ff9e27',
+                borderColor: 'rgb(23, 125, 255)',
+                data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false,
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        display: false //this will remove only the label
+                    },
+                    gridLines: {
+                        drawBorder: false,
+                        display: false
+                    }
+                }],
+                xAxes: [{
+                    gridLines: {
+                        drawBorder: false,
+                        display: false
+                    }
+                }]
+            },
+        }
+    });
+
+    $('#lineChart').sparkline([105, 103, 123, 100, 95, 105, 115], {
+        type: 'line',
+        height: '70',
+        width: '100%',
+        lineWidth: '2',
+        lineColor: '#ffa534',
+        fillColor: 'rgba(255, 165, 52, .14)'
+    });
+</script>
+
+</body>
+</html>

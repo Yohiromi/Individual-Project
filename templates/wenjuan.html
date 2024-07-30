@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}心理健康问卷{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static',filename='css/wenjuan.css') }}">
+{% endblock %}
+{% block body %}
+  <div class="row">
+    <div class="col-lg-2">
+    </div>
+    <div class="col-lg-9 mt-2">
+      <div class="row ml-4" style="background-color: white;width: 800px">
+        <table style="width: 100%">
+          <form action="#"
+                method="post"
+                id="form1">
+            <input type="hidden" id="len_of_wenjuan" value="{{ wenjuan_len }}">
+            <input type="hidden" id="len_of_option" value="{{ option_len }}">
+            {% for i in range(1,wenjuan_len) %}
+              <input type="hidden" id="wid{{ i }}{{ j }}" value="{{ wenjuan_search[i].id }}">
+              <tbody id="{{ i }}" style="display:none">
+              <tr>
+                <td style="padding-left: 30px;">
+                  <h4 style="margin-top: 5px;display: block;text-align: center;width: 750px;">{{ i }}.{{ wenjuan_search[i].exercise_title }}</h4>
+                </td>
+              </tr>
+              {% if wenjuan_search[i].exercise_type=="radio" %}
+                <tr>
+                  <td>
+                    {% for j in range(1,option_len) %}
+                      <input type="hidden" id="op{{ i }}{{ j }}"
+                             value="{{ option_all[i][j] }}|{{ wenjuan_search[i].exercise_type }}|{{ point_list[i][j] }}">
+                      <button type="button" class="btn btn-outline-success" id="select{{ i }}{{ j }}"
+                              style="display: block;width: 100%;margin-bottom: 20px">
+                        {{ option_all[i][j] }}
+                      </button>
+                    {% endfor %}
+                  </td>
+                </tr>
+              {% endif %}
+              <a class="btn  btn-lg active" role="button" aria-pressed="true" id="qian{{ i }}" aria-disabled="true"
+                 style="width: 50%;display: none;background-color: #64bfa1;color: white;">
+                <p style="display: inline-block;margin:auto;">上一题</p>
+              </a>
+              <a class="btn  btn-lg active" role="button" aria-pressed="true" id="btn{{ i }}" aria-disabled="true"
+                 style="width: 50%;display: none;background-color: #64bfa1;color: white;pointer-events: none;">
+                <p style="display: inline-block;margin:auto;">剩余题目（{{ i }}/{{ wenjuan_len-1 }}）</p>
+              </a>
+              </tbody>
+            {% endfor %}
+          </form>
+        </table>
+        <div class="row ml-2" style="padding: 0px;width: 790px;margin: 0px;display: none" id="last_button">
+          <div style="padding: 0px;width: 100%;">
+            <a href="{{ url_for('wenjuan.wenjuan_report',wname=wname,test_times=test_times) }}"
+               class="btn btn-outline-success" id="btn-click"
+               style="display: block;width: 100%;background-color: #64bfa1;">
+              生成报告
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+      </div>
+    </div>
+  </div>
+  <script>
+      window.onload = function () {
+          window.onbeforeunload = function () {
+              return "您尚未完成测试";
+          }
+          document.getElementById(1).style.display = "inline"
+          document.getElementById("btn1").style.display = "inline-block"
+          var wenjuan_len = document.getElementById("len_of_wenjuan").value
+          var option_len = document.getElementById("len_of_option").value
+          var Last_button = document.getElementById("last_button")
+          var option_dir = {}
+          for (let i = 1; i < wenjuan_len; i++) {
+              for (let j = 1; j < option_len; j++) {
+                  document.getElementById("select" + i + j).onclick = function () {
+                      if (i === wenjuan_len - 1) {//点击完最后一道题
+                          Last_button.style.display = "inline"
+                          document.getElementById("qian" + i).style.display = "none"
+                          document.getElementById('btn' + i).style.display = "none";
+                          document.getElementById("btn-click").onclick = function () {
+                              $.ajax({
+                                  url: '/wenjuan/get_answer/{{ wname }}',
+                                  type: 'POST',
+                                  dataType: 'json',
+                                  contentType: 'application/json;charset=UTF-8',
+                                  data: JSON.stringify(option_dir),
+                                  success: function (data) {
+                                      console.log(data);
+                                  },
+                                  errMode: function () {
+                                      alert("错误")
+                                  }
+                              });
+                          }
+                      } else {
+                          Last_button.style.display = "none"
+                      }
+                      option_dir[document.getElementById('wid' + i).value] = document.getElementById("op" + i + j).value;
+                      document.getElementById(i).style.display = "none";
+                      document.getElementById(i + 1).style.display = "inline";
+                      document.getElementById('btn' + i).style.display = "none";
+                      document.getElementById('btn' + String(i + 1)).style.display = "inline-block";
+                      if (i >= 1) {
+                          document.getElementById("qian" + i).style.display = "none"
+                          document.getElementById("qian" + String(i + 1)).style.display = "inline-block"
+                      }
+
+                  }
+              }
+              document.getElementById("qian" + i).onclick = function () {
+
+                  if (i !== wenjuan_len - 1) {
+                      document.getElementById('btn' + String(wenjuan_len - 1)).style.display = "none";
+                      document.getElementById(i).style.display = "none";
+                      document.getElementById(i - 1).style.display = "inline";
+                      document.getElementById('btn' + i).style.display = "none";
+                      document.getElementById('btn' + String(i - 1)).style.display = "inline-block";
+                  }
+                  if (i >= 1) {
+                      document.getElementById("qian" + i).style.display = "none"
+                      document.getElementById("qian" + String(i - 1)).style.display = "inline-block"
+                  }
+              }
+          }
+      }
+  </script>
+{% endblock %}

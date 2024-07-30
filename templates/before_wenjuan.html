@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}心理测试{% endblock %}
+{% block head %}
+{% endblock %}
+{% block body %}
+  <div class="row "
+       style="width: 800px;height: 90px;border: 1px solid #dddddd;margin: auto;margin-top: 20px;background-color:#f5f5f5 ">
+    <input type="hidden" id="refreshed" value="no">
+    <div class="row" style="padding: 10px;width: 100%;height: 20px">
+      <p style="display:block;color: #41b5d8;margin-left: 20px;height: 20px">测试简介</p>
+    </div>
+    <div class="row" style="padding: 10px;padding-top:5px;width: 100%;height: 20px;margin-top: 10px">
+      <p style="display:block;margin-left: 20px;height: 20px">国际通用的自评量表，可以快速了解自身的心理健康水平。</p>
+    </div>
+    <div class="row"
+         style="width: 800px;height: 300px;border: 1px solid #dddddd;margin: auto;margin-top: 80px;background-color:#f5f5f5 ">
+      <div class="row" style="padding: 10px;width: 100%;height: 20px">
+        <p style="display:block;color: #41b5d8;margin-left: 20px;height: 20px">试题指标</p>
+        <table class="table">
+          <tbody>
+          <tr>
+            <th scope="row">题目数</th>
+            <td>{{ wenjuan_num }}</td>
+          </tr>
+          <tr>
+            <th scope="row">预计用时</th>
+            <td>{{ wenjuan_num / 10 }}分钟</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="row" style="width: 100%;position:fixed;margin: auto;bottom: 0">
+    {% if test_times.test_times!=3 %}
+      <a href="{{ url_for('wenjuan.show_wenjuan', wname=wname) }}"
+         class="btn  btn-lg active" role="button" aria-pressed="true" id="start"
+         style="width: 100%;display: block;background-color: #64bfa1;color: white;">
+        <p style="display: block;margin:0px;margin-right: 200px">开始测试(剩余次数{{ test_times.test_times }}/3)</p>
+      </a>
+    {% else %}
+      <a href="{{ url_for('wenjuan.show_wenjuan',wname=wname) }}"
+         class="btn  btn-lg active" role="button" aria-pressed="true" id="start" aria-disabled="true"
+         style="width: 100%;display: block;background-color: #64bfa1;color: white;pointer-events: none;">
+        <p style="display: block;margin:0px;margin-right: 200px;">开始测试(剩余次数{{ test_times.test_times }}/3)</p>
+      </a>
+    {% endif %}
+
+
+  </div>
+  <script>
+      window.onpopstate = function () {
+          location.reload()
+      }
+  </script>
+{% endblock %}
